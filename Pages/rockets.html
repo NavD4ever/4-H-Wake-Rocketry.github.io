@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Rockets - 4-H Wake Rocketry</title>
+    <link rel="stylesheet" href="CSS/styles.css">
+</head>
+<body>
+    <div class="side-rockets left">
+        <img src="Photos/rocket photos/images.jpg" alt="Rocket" class="rocket-photo">
+        <img src="Photos/rocket photos/images (2).jpg" alt="Rocket" class="rocket-photo">
+        <img src="Photos/rocket photos/images (5).jpg" alt="Rocket" class="rocket-photo">
+    </div>
+    <div class="side-rockets right">
+        <img src="Photos/rocket photos/images (1).jpg" alt="Rocket" class="rocket-photo">
+        <img src="Photos/rocket photos/images (3).jpg" alt="Rocket" class="rocket-photo">
+        <img src="Photos/rocket photos/images (6).jpg" alt="Rocket" class="rocket-photo">
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="4h logo.png" alt="4-H Logo">
+                4-H Wake Rocketry
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="Pages/team.html" class="nav-link">Team</a></li>
+                <li><a href="Pages/rockets.html" class="nav-link">Rockets</a></li>
+                <li><a href="Pages/launches.html" class="nav-link">Launches</a></li>
+                <li><a href="Pages/gallery.html" class="nav-link">Gallery</a></li>
+                <li><a href="Pages/contact.html" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main style="margin-top: 70px;">
+        <section class="hero" style="padding: 80px 20px 60px;">
+            <div class="hero-content">
+                <h1>Our Rocket Fleet 🚀</h1>
+                <p>Youth-designed and built rockets for competition, education, and pure fun. Each rocket represents hours of learning and teamwork!</p>
+            </div>
+        </section>
+
+        <section class="rockets-section">
+            <div class="container">
+                <!-- Rockets will be rendered from data/rockets.json here -->
+                <div id="rocket-grid" class="rockets-grid"></div>
+
+                <section class="mission" style="padding: 40px 0;">
+                    <div class="container">
+                        <h2>Youth-Led Design Process 🎨</h2>
+                        <p style="text-align: center; max-width: 800px; margin: 0 auto;">
+                            Every rocket is designed and built by our youth members with adult mentorship. We start with OpenRocket simulations, then move to hands-on construction using balsa, fiberglass, and 3D-printed components. Safety is our top priority, with every rocket inspected before flight. Through building rockets, our members learn engineering principles, problem-solving, and teamwork skills that last a lifetime.
+                        </p>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 4-H Wake Rocketry. All rights reserved.</p>
+            <p>NAR Safety Certified | 4-H STEM Program | Wake County Extension</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

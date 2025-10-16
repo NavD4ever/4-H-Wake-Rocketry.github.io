@@ -56,7 +56,6 @@ function initSeasonToggles() {
             }
 
             // render planned launches for this season if applicable
-            // season names in markup are e.g. '2026' (year numbers)
             try {
                 const yearNum = parseInt(season, 10);
                 if (!isNaN(yearNum)) renderPlannedLaunches(yearNum);
@@ -105,9 +104,8 @@ function refreshCurrentView() {
         renderLaunchDays(2025);
         renderLaunchDays(2026);
     }
-    if (document.querySelector('.rocket-grid')) {
-        renderRockets(2025);
-        renderRockets(2026);
+    if (document.getElementById('rocket-grid')) {
+        renderRockets();
     }
 }
 
@@ -644,27 +642,75 @@ function renderLaunchDays(year) {
     `;
 }
 
-function renderRockets(year) {
-    const container = document.querySelector(`[data-season="${year}"] .rocket-grid`);
+function renderRockets() {
+    // New renderRockets: load rockets from data/rockets.json if present, otherwise fall back to inline rocketData
+    const container = document.getElementById('rocket-grid');
     if (!container) return;
-    
-    const rockets = rocketData.rockets.filter(rocket => {
-        const rocketYear = new Date(rocket.creationDate).getFullYear();
-        return (year === 2025 && rocketYear <= 2025) || (year === 2026 && rocketYear <= 2026);
-    });
-    
-    container.innerHTML = rockets.map(rocket => `
+
+    // Try common locations for the data file: ../data (when page is in Pages/) then data/
+    const tryPaths = ['../data/rockets.json', 'data/rockets.json'];
+    (function tryFetch(paths) {
+        if (!paths || paths.length === 0) {
+            renderRocketsArray(container, rocketData.rockets || []);
+            return;
+        }
+        const url = paths[0];
+        fetch(url).then(r => {
+            if (!r.ok) throw new Error('no json');
+            return r.json();
+        }).then(j => {
+            const arr = j.rockets || [];
+            renderRocketsArray(container, arr);
+        }).catch(() => {
+            tryFetch(paths.slice(1));
+        });
+    })(tryPaths);
+}
+
+function renderRocketsArray(container, rockets) {
+    // Normalize creationDate and sort newest first
+    const sorted = rockets.slice().sort((a,b) => new Date(b.creationDate || 0) - new Date(a.creationDate || 0));
+
+    container.innerHTML = sorted.map(r => renderRocketCard(r)).join('');
+}
+
+function renderRocketCard(r) {
+    const name = escapeHtml(r.name || '');
+    const created = r.creationDate ? formatDate(r.creationDate) : 'Unknown';
+    const img = r.image ? `rocket images/${r.image}` : 'https://via.placeholder.com/300x200/10b981/ffffff?text=Rocket';
+    const publicNotes = r.publicNotes || r.description || '';
+    const privateNotes = r.privateNotes || '';
+
+    return `
         <div class="rocket-card">
-            <img src="rocket images/${rocket.image}" alt="${rocket.name}" class="rocket-image">
+            <img src="${img}" alt="${name}" class="rocket-image">
             <div class="rocket-info">
-                <h3>${rocket.name}</h3>
-                <p><strong>Created:</strong> ${formatDate(rocket.creationDate)}</p>
-                <p><strong>Target Altitude:</strong> ${rocket.altitudeIntent} ft</p>
-                <p><strong>Diameter:</strong> ${rocket.diameter}"</p>
+                <h3>${name}</h3>
+                <p><strong>Created:</strong> ${created}</p>
+                <p><strong>Target Altitude:</strong> ${r.altitudeIntent || 'N/A'} ft</p>
+                <p><strong>Diameter:</strong> ${r.diameter || 'N/A'}"</p>
+                <div class="rocket-specs">
+                    ${r.length ? `<strong>Length:</strong> ${r.length}"<br>` : ''}
+                    ${r.emptyMass ? `<strong>Empty Mass:</strong> ${r.emptyMass} g<br>` : ''}
+                    ${r.optimalPayloadMass ? `<strong>Payload:</strong> ${r.optimalPayloadMass} oz<br>` : ''}
+                    ${r.eggProtMaterial ? `<strong>Egg Protection:</strong> ${escapeHtml(r.eggProtMaterial)}<br>` : ''}
+                    ${r.colorScheme ? `<strong>Color:</strong> ${escapeHtml(r.colorScheme)}<br>` : ''}
+                </div>
+
+                <div class="public-section">
+                    <h4>Public Info</h4>
+                    <p>${escapeHtml(publicNotes)}</p>
+                </div>
+
+                <div class="private-section" style="display: ${isPrivateMode ? 'block' : 'none'};">
+                    <h4>🔒 Private Notes</h4>
+                    <p>${escapeHtml(privateNotes)}</p>
+                </div>
             </div>
         </div>
-    `).join('');
+    `;
 }
+
 
 // Initialize season toggles and load launch data after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -679,9 +725,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Load rocket data if on rockets page
-    if (document.querySelector('.rocket-grid')) {
-        renderRockets(2025);
-        renderRockets(2026);
+    if (document.getElementById('rocket-grid')) {
+        renderRockets();
     }
 });
 

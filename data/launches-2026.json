@@ -11,7 +11,7 @@
       "qualificationLaunchDay": false,
       "launches": [
         {
-          "rocket": "Thunder Strike I",
+          "rocket": "Thunder Strike III",
           "motor": "K550-M",
           "success": true,
           "altitude": 3200,
