@@ -71,8 +71,123 @@ function initSeasonToggles() {
     });
 }
 
-// Initialize season toggles after DOM ready
-document.addEventListener('DOMContentLoaded', initSeasonToggles);
+// Launch data management
+let launchData = {};
+
+async function loadLaunchData(year) {
+    if (launchData[year]) return launchData[year];
+    
+    try {
+        const response = await fetch(`data/launches-${year}.json`);
+        const data = await response.json();
+        launchData[year] = data;
+        return data;
+    } catch (error) {
+        console.error(`Failed to load launch data for ${year}:`, error);
+        return null;
+    }
+}
+
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+function renderLaunchDay(launchDay) {
+    const importantIcon = launchDay.importantLaunchDay ? '🏆' : '🚀';
+    const qualIcon = launchDay.qualificationLaunchDay ? ' (QUAL)' : '';
+    
+    return `
+        <div class="launch-day-card" data-date="${launchDay.date}">
+            <div class="launch-day-header" onclick="toggleLaunchDay('${launchDay.date}')">
+                <h3>${importantIcon} ${formatDate(launchDay.date)}${qualIcon}</h3>
+                <div class="launch-day-summary">
+                    <span><strong>Location:</strong> ${launchDay.location}</span>
+                    <span><strong>Members:</strong> ${launchDay.attendedMembers}</span>
+                    <span><strong>Peak Alt:</strong> ${launchDay.peakAltitude} ft</span>
+                    <span><strong>Peak Time:</strong> ${launchDay.peakTime}</span>
+                </div>
+                <div class="expand-icon">▼</div>
+            </div>
+            <div class="launch-day-details" style="display: none;">
+                ${launchDay.launches.map(launch => renderLaunch(launch)).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function renderLaunch(launch) {
+    const statusIcon = launch.success ? '✅' : '❌';
+    const importantBadge = launch.important ? '<span class="important-badge">⭐ Important</span>' : '';
+    const qualBadge = launch.qualificationLaunchToggle ? '<span class="qual-badge">🎯 Qualification</span>' : '';
+    const tarcScore = launch.tarcScore ? `<strong>TARC Score:</strong> ${launch.tarcScore}<br>` : '';
+    
+    return `
+        <div class="launch-item">
+            <div class="launch-header">
+                <h4>${statusIcon} ${launch.rocket}</h4>
+                <div class="launch-badges">
+                    ${importantBadge}
+                    ${qualBadge}
+                </div>
+            </div>
+            <div class="launch-details">
+                <p><strong>Motor:</strong> ${launch.motor} | <strong>Altitude:</strong> ${launch.altitude} ft</p>
+                <p><strong>Egg Status:</strong> ${launch.eggStatus} | <strong>Time:</strong> ${launch.time}</p>
+                ${tarcScore ? `<p>${tarcScore}</p>` : ''}
+                <p class="launch-notes">${launch.publicNotes}</p>
+            </div>
+        </div>
+    `;
+}
+
+function toggleLaunchDay(date) {
+    const card = document.querySelector(`[data-date="${date}"]`);
+    const details = card.querySelector('.launch-day-details');
+    const icon = card.querySelector('.expand-icon');
+    
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+        icon.textContent = '▲';
+        card.classList.add('expanded');
+    } else {
+        details.style.display = 'none';
+        icon.textContent = '▼';
+        card.classList.remove('expanded');
+    }
+}
+
+async function renderLaunchDays(year) {
+    const data = await loadLaunchData(year);
+    if (!data) return;
+    
+    const container = document.getElementById(`launch-days-${year}`);
+    if (!container) return;
+    
+    const sortedDays = data.launchDays.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    container.innerHTML = `
+        <h2 style="text-align: center; margin-bottom: 2rem;">${year} Launch History 🚀</h2>
+        <div class="launch-timeline">
+            ${sortedDays.map(day => renderLaunchDay(day)).join('')}
+        </div>
+    `;
+}
+
+// Initialize season toggles and load launch data after DOM ready
+document.addEventListener('DOMContentLoaded', async () => {
+    initSeasonToggles();
+    
+    // Load launch data for both years if on launches page
+    if (document.getElementById('launch-days-2025')) {
+        await renderLaunchDays(2025);
+        await renderLaunchDays(2026);
+    }
+});
 
 // Gallery image modal (simple lightbox effect)
 document.querySelectorAll('.gallery-item').forEach(item => {

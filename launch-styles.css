@@ -1,0 +1,175 @@
+/* Launch Day Card Styles */
+.launch-day-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.launch-day-card:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.launch-day-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #2c5aa0 0%, #1e3a8a 100%);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.launch-day-header h3 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.launch-day-summary {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.expand-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+    min-width: 20px;
+    text-align: center;
+}
+
+.launch-day-card.expanded .expand-icon {
+    transform: rotate(180deg);
+}
+
+.launch-day-details {
+    padding: 0 1.5rem 1.5rem;
+    background: #f8fafc;
+}
+
+/* Individual Launch Styles */
+.launch-item {
+    background: white;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    border-left: 4px solid #2c5aa0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.launch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.launch-header h4 {
+    margin: 0;
+    color: #1e3a8a;
+    font-size: 1.2rem;
+}
+
+.launch-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.important-badge, .qual-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.important-badge {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fbbf24;
+}
+
+.qual-badge {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #3b82f6;
+}
+
+.launch-details p {
+    margin: 0.5rem 0;
+    color: #374151;
+    line-height: 1.5;
+}
+
+.launch-notes {
+    font-style: italic;
+    color: #6b7280;
+    background: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid #e5e7eb;
+}
+
+/* Timeline Container */
+.launch-timeline {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .launch-day-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+    
+    .launch-day-summary {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    
+    .expand-icon {
+        align-self: flex-end;
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+    }
+    
+    .launch-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .launch-badges {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .launch-day-card {
+        margin: 0 -1rem 1.5rem;
+        border-radius: 0;
+    }
+    
+    .launch-day-header, .launch-day-details {
+        padding: 1rem;
+    }
+    
+    .launch-item {
+        padding: 1rem;
+        margin: 0.75rem 0;
+    }
+}

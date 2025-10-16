@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Launch Events - 4-H Wake Rocketry</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="launch-styles.css">
 </head>
 <body>
     <div class="side-rockets left">
@@ -54,190 +55,13 @@
                     <button class="season-btn" data-season="2026">2026 season</button>
                 </div>
 
-                <!-- 2025 season content -->
+                <!-- Dynamic season content -->
                 <div class="season-content" data-season="2025">
-                    <h2 style="text-align: center; margin-bottom: 2rem;">Upcoming Launches 📅</h2>
-                    <div class="launch-preview" style="margin-bottom: 3rem;">
-                        <div class="launch-item">
-                            <h4>🏆 NC State 4-H Rocketry Championship</h4>
-                            <p>Annual state competition where our youth will compete in multiple divisions including altitude, duration, and payload challenges.</p>
-                            <span class="date">April 13, 2025 | NC State Fairgrounds</span>
-                        </div>
-                        <div class="launch-item">
-                            <h4>🚀 TARC National Qualifier</h4>
-                            <p>Team America Rocketry Challenge regional qualifier. Our youth will attempt to carry an egg payload to exactly 800 feet in 45 seconds.</p>
-                            <span class="date">March 15, 2025 | Tripoli Rocketry Field</span>
-                        </div>
-                    </div>
-
-                    <h2 style="text-align: center; margin-bottom: 2rem;">Recent Launch History 📜</h2>
-                    <div class="launch-timeline">
-                        <div class="launch-event">
-                            <div class="launch-date">Oct 15, 2024</div>
-                            <div class="launch-details">
-                                <h3>🏆 State Championship Victory</h3>
-                                <p><strong>Rocket:</strong> Green Thunder | <strong>Motor:</strong> J415-M</p>
-                                <p><strong>Result:</strong> 2,847 feet - 1st Place in High Power Division! Emma Johnson (16) led the team to victory with perfect flight and recovery.</p>
-                                <p><strong>Weather:</strong> Clear skies, 8 mph winds | <strong>Team:</strong> 6 youth members</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Sep 7, 2024</div>
-                            <div class="launch-details">
-                                <h3>🎓 Youth Leadership Launch</h3>
-                                <p><strong>Rocket:</strong> 4-H Explorer | <strong>Motor:</strong> G64-W</p>
-                                <p><strong>Result:</strong> Perfect educational flight to 1,650 feet! New member Maya Kim (13) successfully conducted her first rocket launch with mentor guidance.</p>
-                                <p><strong>Weather:</strong> Partly cloudy, 6 mph winds | <strong>Achievement:</strong> First solo youth launch</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Aug 12, 2024</div>
-                            <div class="launch-details">
-                                <h3>🔬 STEM Data Collection Flight</h3>
-                                <p><strong>Rocket:</strong> STEM Lab Flyer | <strong>Motor:</strong> H128-M</p>
-                                <p><strong>Result:</strong> Successful data collection flight to 1,950 feet. Onboard sensors recorded temperature, acceleration, and altitude data for science fair projects.</p>
-                                <p><strong>Weather:</strong> Clear, 10 mph winds | <strong>Data:</strong> 847 data points collected</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Jun 3, 2024</div>
-                            <div class="launch-details">
-                                <h3>🏆 TARC Regional Success</h3>
-                                <p><strong>Rocket:</strong> TARC Champion | <strong>Motor:</strong> F67-9</p>
-                                <p><strong>Result:</strong> 3rd Place finish! Achieved 798 feet in 44.2 seconds with unbroken egg. Youth team of Alex Liu (15) and Jordan Thompson (17) led the effort.</p>
-                                <p><strong>Weather:</strong> Sunny, 7 mph winds | <strong>Payload:</strong> Raw egg - intact!</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Apr 20, 2024</div>
-                            <div class="launch-details">
-                                <h3>🎓 New Member Training Day</h3>
-                                <p><strong>Rocket:</strong> Youth Builder Special | <strong>Motor:</strong> D12-5</p>
-                                <p><strong>Result:</strong> Perfect training flight to 650 feet! Five new 4-H members successfully built and launched their first rockets with adult mentors.</p>
-                                <p><strong>Weather:</strong> Mild, 5 mph winds | <strong>Participants:</strong> 5 new youth rocketeers</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Season statistics (2025) -->
-                    <section class="mission" style="padding: 40px 0;">
-                        <div class="container">
-                            <h2>2024 Program Statistics 📊</h2>
-                            <div class="highlight-grid">
-                                <div class="highlight-card">
-                                    <h3>🚀 Flight Statistics</h3>
-                                    <p><strong>Total Flights:</strong> 34<br>
-                                    <strong>Success Rate:</strong> 97%<br>
-                                    <strong>Max Altitude:</strong> 2,847 ft<br>
-                                    <strong>Youth Pilots:</strong> 12</p>
-                                </div>
-                                <div class="highlight-card">
-                                    <h3>🏆 Highlight Ach</h3>
-                                    <p><strong>State Championships:</strong> 1st Place<br>
-                                    <strong>TARC Regional:</strong> 3rd Place<br>
-                                    <strong>New Members Trained:</strong> 8<br>
-                                    <strong>Perfect Egg Flights:</strong> 15</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    <div id="launch-days-2025"></div>
                 </div>
 
-                <!-- 2026 season content (currently same as 2025; edit inside this block to change 2026 data) -->
                 <div class="season-content" data-season="2026" style="display:none;">
-                    <h2 style="text-align: center; margin-bottom: 2rem;">Upcoming Launches 📅</h2>
-                    <div class="launch-preview" style="margin-bottom: 3rem;">
-                        <div class="launch-item">
-                            <h4>🏆 NC State 4-H Rocketry Championship</h4>
-                            <p>Annual state competition where our youth will compete in multiple divisions including altitude, duration, and payload challenges.</p>
-                            <span class="date">April 13, 2025 | NC State Fairgrounds</span>
-                        </div>
-                        <div class="launch-item">
-                            <h4>🚀 TARC National Qualifier</h4>
-                            <p>Team America Rocketry Challenge regional qualifier. Our youth will attempt to carry an egg payload to exactly 800 feet in 45 seconds.</p>
-                            <span class="date">March 15, 2025 | Tripoli Rocketry Field</span>
-                        </div>
-                    </div>
-
-                    <h2 style="text-align: center; margin-bottom: 2rem;">Recent Launch History 📜</h2>
-                    <div class="launch-timeline">
-                        <div class="launch-event">
-                            <div class="launch-date">Oct 15, 2024</div>
-                            <div class="launch-details">
-                                <h3>🏆 State Championship Victory</h3>
-                                <p><strong>Rocket:</strong> Green Thunder | <strong>Motor:</strong> J415-M</p>
-                                <p><strong>Result:</strong> 2,847 feet - 1st Place in High Power Division! Emma Johnson (16) led the team to victory with perfect flight and recovery.</p>
-                                <p><strong>Weather:</strong> Clear skies, 8 mph winds | <strong>Team:</strong> 6 youth members</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Sep 7, 2024</div>
-                            <div class="launch-details">
-                                <h3>🎓 Youth Leadership Launch</h3>
-                                <p><strong>Rocket:</strong> 4-H Explorer | <strong>Motor:</strong> G64-W</p>
-                                <p><strong>Result:</strong> Perfect educational flight to 1,650 feet! New member Maya Kim (13) successfully conducted her first rocket launch with mentor guidance.</p>
-                                <p><strong>Weather:</strong> Partly cloudy, 6 mph winds | <strong>Achievement:</strong> First solo youth launch</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Aug 12, 2024</div>
-                            <div class="launch-details">
-                                <h3>🔬 STEM Data Collection Flight</h3>
-                                <p><strong>Rocket:</strong> STEM Lab Flyer | <strong>Motor:</strong> H128-M</p>
-                                <p><strong>Result:</strong> Successful data collection flight to 1,950 feet. Onboard sensors recorded temperature, acceleration, and altitude data for science fair projects.</p>
-                                <p><strong>Weather:</strong> Clear, 10 mph winds | <strong>Data:</strong> 847 data points collected</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Jun 3, 2024</div>
-                            <div class="launch-details">
-                                <h3>🏆 TARC Regional Success</h3>
-                                <p><strong>Rocket:</strong> TARC Champion | <strong>Motor:</strong> F67-9</p>
-                                <p><strong>Result:</strong> 3rd Place finish! Achieved 798 feet in 44.2 seconds with unbroken egg. Youth team of Alex Liu (15) and Jordan Thompson (17) led the effort.</p>
-                                <p><strong>Weather:</strong> Sunny, 7 mph winds | <strong>Payload:</strong> Raw egg - intact!</p>
-                            </div>
-                        </div>
-
-                        <div class="launch-event">
-                            <div class="launch-date">Apr 20, 2024</div>
-                            <div class="launch-details">
-                                <h3>🎓 New Member Training Day</h3>
-                                <p><strong>Rocket:</strong> Youth Builder Special | <strong>Motor:</strong> D12-5</p>
-                                <p><strong>Result:</strong> Perfect training flight to 650 feet! Five new 4-H members successfully built and launched their first rockets with adult mentors.</p>
-                                <p><strong>Weather:</strong> Mild, 5 mph winds | <strong>Participants:</strong> 5 new youth rocketeers</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Season statistics (2026) -->
-                    <section class="mission" style="padding: 40px 0;">
-                        <div class="container">
-                            <h2>2024 Program Statistics 📊</h2>
-                            <div class="highlight-grid">
-                                <div class="highlight-card">
-                                    <h3>🚀 Flight Statistics</h3>
-                                    <p><strong>Total Flights:</strong> 34<br>
-                                    <strong>Success Rate:</strong> 97%<br>
-                                    <strong>Max Altitude:</strong> 2,847 ft<br>
-                                    <strong>Youth Pilots:</strong> 12</p>
-                                </div>
-                                <div class="highlight-card">
-                                    <h3>🏆 Highlight Ach</h3>
-                                    <p><strong>State Championships:</strong> 1st Place<br>
-                                    <strong>TARC Regional:</strong> 3rd Place<br>
-                                    <strong>New Members Trained:</strong> 8<br>
-                                    <strong>Perfect Egg Flights:</strong> 15</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    <div id="launch-days-2026"></div>
                 </div>
             </div>
         </section>

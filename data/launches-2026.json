@@ -1,0 +1,53 @@
+{
+  "year": 2026,
+  "launchDays": [
+    {
+      "date": "2026-05-15",
+      "location": "NC State Fairgrounds",
+      "attendedMembers": 10,
+      "peakAltitude": 3200,
+      "peakTime": "15:20",
+      "importantLaunchDay": true,
+      "qualificationLaunchDay": false,
+      "launches": [
+        {
+          "rocket": "Thunder Strike II",
+          "motor": "K550-M",
+          "success": true,
+          "altitude": 3200,
+          "eggStatus": "intact",
+          "time": "15:20",
+          "tarcScore": null,
+          "important": true,
+          "publicNotes": "New altitude record! Advanced youth team achieved perfect flight with dual deployment system.",
+          "launchToggle": true,
+          "qualificationLaunchToggle": false
+        }
+      ]
+    },
+    {
+      "date": "2026-04-10",
+      "location": "Tripoli Rocketry Field",
+      "attendedMembers": 7,
+      "peakAltitude": 805,
+      "peakTime": "11:30",
+      "importantLaunchDay": false,
+      "qualificationLaunchDay": true,
+      "launches": [
+        {
+          "rocket": "TARC Elite",
+          "motor": "F72-6",
+          "success": true,
+          "altitude": 805,
+          "eggStatus": "intact",
+          "time": "43.8s",
+          "tarcScore": 98.2,
+          "important": true,
+          "publicNotes": "Excellent TARC qualification flight - 805 feet in 43.8 seconds with perfect egg recovery.",
+          "launchToggle": true,
+          "qualificationLaunchToggle": true
+        }
+      ]
+    }
+  ]
+}
