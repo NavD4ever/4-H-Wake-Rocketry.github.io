@@ -71,11 +71,8 @@ function initSeasonToggles() {
     });
 }
 
-// Launch data management
-let launchData = {};
-
-// Fallback data
-const fallbackData = {
+// Launch data
+const launchData = {
     2025: {
         "year": 2025,
         "launchDays": [
@@ -160,10 +157,6 @@ const fallbackData = {
     }
 };
 
-function loadLaunchData(year) {
-    return fallbackData[year] || null;
-}
-
 function formatDate(dateStr) {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', { 
@@ -238,56 +231,30 @@ function toggleLaunchDay(date) {
 }
 
 function renderLaunchDays(year) {
-    console.log(`Attempting to render launch days for ${year}`);
-    
-    const data = loadLaunchData(year);
-    console.log(`Data for ${year}:`, data);
-    
-    if (!data) {
-        console.error(`No data found for ${year}`);
-        return;
-    }
+    const data = launchData[year];
+    if (!data) return;
     
     const container = document.getElementById(`launch-days-${year}`);
-    console.log(`Container for ${year}:`, container);
-    
-    if (!container) {
-        console.error(`No container found for launch-days-${year}`);
-        return;
-    }
+    if (!container) return;
     
     const sortedDays = data.launchDays.sort((a, b) => new Date(b.date) - new Date(a.date));
-    console.log(`Sorted days for ${year}:`, sortedDays);
     
-    const html = `
+    container.innerHTML = `
         <h2 style="text-align: center; margin-bottom: 2rem;">${year} Launch History 🚀</h2>
         <div class="launch-timeline">
             ${sortedDays.map(day => renderLaunchDay(day)).join('')}
         </div>
     `;
-    
-    console.log(`Generated HTML for ${year}:`, html);
-    container.innerHTML = html;
-    console.log(`Rendered launch days for ${year}`);
 }
 
 // Initialize season toggles and load launch data after DOM ready
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded');
-    
     initSeasonToggles();
-    console.log('Season toggles initialized');
     
     // Load launch data for both years if on launches page
-    const container2025 = document.getElementById('launch-days-2025');
-    console.log('Container 2025 found:', !!container2025);
-    
-    if (container2025) {
-        console.log('Rendering launch data...');
+    if (document.getElementById('launch-days-2025')) {
         renderLaunchDays(2025);
         renderLaunchDays(2026);
-    } else {
-        console.log('Not on launches page - no launch containers found');
     }
 });
 
@@ -365,8 +332,6 @@ function handleSubmit(event) {
         submitBtn.disabled = false;
     }, 1500);
 }
-
-
 
 // Animate elements on scroll (simple intersection observer)
 const observerOptions = {
