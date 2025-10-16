@@ -1,0 +1,15 @@
+{
+  "year": 2026,
+  "plannedLaunches": [
+    {
+      "date": "2026-06-12",
+      "location": "NC State Fairgrounds",
+      "intendedAttendees": ["Naveen", "Shri", "Zach", "Hrishiv", "Matthew", "Shu"]
+    },
+    {
+      "date": "2026-09-05",
+      "location": "Regional Competition Site",
+      "intendedAttendees": ["Naveen", "Shri", "Zach"]
+    }
+  ]
+}

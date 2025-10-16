@@ -31,6 +31,7 @@
                 <li><a href="launches.html" class="nav-link active">Launches</a></li>
                 <li><a href="gallery.html" class="nav-link">Gallery</a></li>
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><button id="lock-btn" class="lock-btn" onclick="togglePrivateMode()">🔒</button></li>
             </ul>
             <div class="hamburger">
                 <span></span>
@@ -51,8 +52,8 @@
         <section class="launches-section">
             <div class="container" data-current-season="2025">
                 <div class="season-controls">
-                    <button class="season-btn active" data-season="2025">2025 season</button>
-                    <button class="season-btn" data-season="2026">2026 season</button>
+                    <button class="season-btn active" data-season="2025">2024-2025 season</button>
+                    <button class="season-btn" data-season="2026">2025-2026 season</button>
                 </div>
 
                 <!-- Dynamic season content -->
@@ -61,6 +62,8 @@
                 </div>
 
                 <div class="season-content" data-season="2026" style="display:none;">
+                    <!-- Rendered planned launches will be injected here. Data source priority: data/planned-launches-2026.csv -> data/planned-launches-2026.json -> inline script (none) -->
+                    <div id="planned-launches-2026" class="planned-launchs-container"></div>
                     <div id="launch-days-2026"></div>
                 </div>
             </div>

@@ -1,0 +1,41 @@
+{
+  "rockets": [
+    {
+      "name": "Green Thunder",
+      "creationDate": "2024-08-15",
+      "image": "green-thunder.jpg",
+      "altitudeIntent": 2800,
+      "diameter": 3.9,
+      "emptyMass": 1650,
+      "optimalPayloadMass": 2.1,
+      "length": 72,
+      "cd": 0.45,
+      "eggProtMaterial": "Foam padding",
+      "colorScheme": "Green and Black",
+      "numFins": 4,
+      "openrocketFile": "green-thunder.ork",
+      "privateNotes": "High performance rocket, excellent for competitions"
+    },
+    {
+      "name": "TARC Champion",
+      "creationDate": "2024-02-20",
+      "image": "tarc-champion.jpg",
+      "altitudeIntent": 800,
+      "diameter": 2.6
+    },
+    {
+      "name": "Youth Builder Special",
+      "creationDate": "2024-01-10",
+      "image": "youth-builder.jpg",
+      "altitudeIntent": 650,
+      "diameter": 1.6
+    },
+    {
+      "name": "Thunder Strike II",
+      "creationDate": "2025-03-01",
+      "image": "thunder-strike-ii.jpg",
+      "altitudeIntent": 3200,
+      "diameter": 4.0
+    }
+  ]
+}

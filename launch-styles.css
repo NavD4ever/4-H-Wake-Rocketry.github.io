@@ -53,6 +53,8 @@
 .launch-day-details {
     padding: 0 1.5rem 1.5rem;
     background: #f8fafc;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 /* Individual Launch Styles */
@@ -61,7 +63,6 @@
     border-radius: 8px;
     padding: 1.25rem;
     margin: 1rem 0;
-    border-left: 4px solid #2c5aa0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -121,10 +122,115 @@
     border-left: 3px solid #e5e7eb;
 }
 
+.launch-day-photo {
+    width: 100%;
+    max-width: 400px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.rocket-link {
+    color: #2c5aa0;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.rocket-link:hover {
+    text-decoration: underline;
+}
+
+.lock-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.lock-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.private-section, .private-launch-section {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.private-section h4, .private-launch-section h5 {
+    margin: 0 0 0.5rem 0;
+    color: #92400e;
+}
+
+.private-grid {
+    display: grid;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.private-grid div {
+    padding: 0.25rem 0;
+}
+
 /* Timeline Container */
 .launch-timeline {
     max-width: 900px;
     margin: 0 auto;
+    max-height: none;
+    overflow: visible;
+}
+
+/* Season Statistics Card */
+.season-stats-card {
+    background: linear-gradient(135deg, #1e3a8a 0%, #2c5aa0 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.season-stats-card h3 {
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #fbbf24;
 }
 
 /* Responsive Design */

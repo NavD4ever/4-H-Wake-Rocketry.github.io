@@ -54,6 +54,15 @@ function initSeasonToggles() {
                     }
                 });
             }
+
+            // render planned launches for this season if applicable
+            // season names in markup are e.g. '2026' (year numbers)
+            try {
+                const yearNum = parseInt(season, 10);
+                if (!isNaN(yearNum)) renderPlannedLaunches(yearNum);
+            } catch (e) {
+                // ignore
+            }
         }
 
         // wire up click handlers
@@ -71,6 +80,200 @@ function initSeasonToggles() {
     });
 }
 
+// Private mode state
+let isPrivateMode = false;
+
+function togglePrivateMode() {
+    if (!isPrivateMode) {
+        const code = prompt('Enter master code:');
+        if (code === '04739') {
+            isPrivateMode = true;
+            document.getElementById('lock-btn').textContent = '🔓';
+            refreshCurrentView();
+        } else {
+            alert('Incorrect code');
+        }
+    } else {
+        isPrivateMode = false;
+        document.getElementById('lock-btn').textContent = '🔒';
+        refreshCurrentView();
+    }
+}
+
+function refreshCurrentView() {
+    if (document.getElementById('launch-days-2025')) {
+        renderLaunchDays(2025);
+        renderLaunchDays(2026);
+    }
+    if (document.querySelector('.rocket-grid')) {
+        renderRockets(2025);
+        renderRockets(2026);
+    }
+}
+
+// Planned launches rendering: prefer CSV at data/planned-launches-<year>.csv, fall back to JSON at data/planned-launches-<year>.json
+function renderPlannedLaunches(year) {
+    const container = document.getElementById(`planned-launches-${year}`);
+    if (!container) return;
+
+    const csvUrl = `data/planned-launches-${year}.csv`;
+    const jsonUrl = `data/planned-launches-${year}.json`;
+
+    // Try CSV first
+    fetch(csvUrl).then(resp => {
+        if (!resp.ok) throw new Error('CSV not found');
+        return resp.text();
+    }).then(text => {
+        const parsed = parseCsvToObjects(text).slice(0,3);
+        renderPlannedIntoContainer(container, year, parsed);
+    }).catch(() => {
+        // Fallback to JSON file
+        fetch(jsonUrl).then(r => {
+            if (!r.ok) throw new Error('JSON not found');
+            return r.json();
+        }).then(j => {
+            const arr = (j.plannedLaunches || []).slice(0,3);
+            renderPlannedIntoContainer(container, year, arr);
+        }).catch(() => {
+            // No data available
+            container.innerHTML = '';
+        });
+    });
+}
+
+function renderPlannedIntoContainer(container, year, planned) {
+    if (!planned || planned.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    // Normalize fields for CSV which may have different header names
+    const normalized = planned.map(p => normalizePlannedRow(p));
+
+    container.innerHTML = `
+        <h2 style="text-align: center; margin-bottom: 1rem;">Planned Launches (${year})</h2>
+        <div class="planned-grid">
+            ${normalized.map(p => renderPlannedCard(p)).join('')}
+        </div>
+    `;
+}
+
+function normalizePlannedRow(p) {
+    // Accept various keys that might be present in CSV/JSON and map to expected fields
+    return {
+        date: p.date || p.Date || p.launch_date || '',
+        time: p.time || p.Time || '',
+        location: p.location || p.Location || p.site || '',
+        event: p.event || p.event_name || p.Event || p.title || '',
+        rocket: p.rocket || p.Rocket || p.rocket_name || '',
+        motor: p.motor || p.Motor || '',
+        notes: p.notes || p.Notes || p.description || '',
+        image: p.image || p.Image || ''
+    };
+}
+
+function renderPlannedCard(p) {
+    const date = p.date ? new Date(p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+    const imgHtml = p.image ? `<img src="launch day photos/${p.image}" alt="${p.event || ''}" class="planned-photo">` : '';
+    return `
+        <div class="planned-card">
+            <div class="planned-card-body">
+                <div class="planned-meta">
+                    <h4>${escapeHtml(p.event || '')}</h4>
+                    <div class="planned-meta-small">${escapeHtml(date)} ${p.time ? '· ' + escapeHtml(p.time) : ''} ${p.location ? '· ' + escapeHtml(p.location) : ''}</div>
+                </div>
+                <p class="planned-notes">${escapeHtml(p.notes || '')}</p>
+                <div class="planned-rocket"><strong>Rocket:</strong> ${escapeHtml(p.rocket || '')} ${p.motor ? '· <strong>Motor:</strong> ' + escapeHtml(p.motor) : ''}</div>
+            </div>
+            <div class="planned-card-img">${imgHtml}</div>
+        </div>
+    `;
+}
+
+// Basic HTML escape for text inserted into templates
+function escapeHtml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Very small CSV parser: converts header row + rows into array of objects.
+function parseCsvToObjects(csvText) {
+    const lines = csvText.split(/\r?\n/).filter(l => l.trim() !== '');
+    if (lines.length < 2) return [];
+    const headers = splitCsvLine(lines[0]).map(h => h.trim());
+    const rows = lines.slice(1);
+    return rows.map(r => {
+        const cols = splitCsvLine(r);
+        const obj = {};
+        headers.forEach((h, i) => {
+            obj[h] = cols[i] !== undefined ? cols[i].trim() : '';
+        });
+        return obj;
+    });
+}
+
+// Splits a single CSV line handling simple quotes. Not a full RFC parser, but works for our data.
+function splitCsvLine(line) {
+    const result = [];
+    let cur = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+            if (inQuotes && line[i+1] === '"') { // escaped quote
+                cur += '"';
+                i++; 
+            } else {
+                inQuotes = !inQuotes;
+            }
+        } else if (ch === ',' && !inQuotes) {
+            result.push(cur);
+            cur = '';
+        } else {
+            cur += ch;
+        }
+    }
+    result.push(cur);
+    return result;
+}
+
+// Rocket data
+const rocketData = {
+    "rockets": [
+        {
+            "name": "Green Thunder",
+            "creationDate": "2024-08-15",
+            "image": "green-thunder.jpg",
+            "altitudeIntent": 2800,
+            "diameter": 3.9
+        },
+        {
+            "name": "TARC Champion",
+            "creationDate": "2024-02-20",
+            "image": "tarc-champion.jpg",
+            "altitudeIntent": 800,
+            "diameter": 2.6
+        },
+        {
+            "name": "Youth Builder Special",
+            "creationDate": "2024-01-10",
+            "image": "youth-builder.jpg",
+            "altitudeIntent": 650,
+            "diameter": 1.6
+        },
+        {
+            "name": "Thunder Strike II",
+            "creationDate": "2025-03-01",
+            "image": "thunder-strike-ii.jpg",
+            "altitudeIntent": 3200,
+            "diameter": 4.0
+        }
+    ]
+};
+
+function getRocketInfo(rocketName) {
+    return rocketData.rockets.find(rocket => rocket.name === rocketName);
+}
+
 // Launch data
 const launchData = {
     2025: {
@@ -84,6 +287,30 @@ const launchData = {
                 "peakTime": "14:32",
                 "importantLaunchDay": true,
                 "qualificationLaunchDay": false,
+                "photo": "state-championship-2025.jpg",
+                "weather": {
+                    "cloudy": true,
+                    "muddy": false,
+                    "rainy": false,
+                    "visibility": "Good"
+                },
+                "feedback": {
+                    "recoveryFeedback": "Excellent recovery system performance",
+                    "launchSequenceFeedback": "Smooth countdown and ignition",
+                    "preparednessFeedback": "Team was well prepared",
+                    "rocketRecoveryFeedback": "Quick and efficient recovery",
+                    "rocketSetupFeedback": "Setup went smoothly",
+                    "whatToImprove": "Better wind monitoring"
+                },
+                "roles": {
+                    "Naveen": "Launch Director",
+                    "Shri": "Safety Officer",
+                    "Zach": "Recovery Team",
+                    "Hrishiv": "Data Logger",
+                    "Matthew": "Rocket Prep",
+                    "Shu": "Range Safety"
+                },
+                "timePeriod": "9:00 AM - 3:00 PM",
                 "launches": [
                     {
                         "rocket": "Green Thunder",
@@ -96,7 +323,60 @@ const launchData = {
                         "important": true,
                         "publicNotes": "1st Place in High Power Division! Emma Johnson (16) led the team to victory with perfect flight and recovery.",
                         "launchToggle": true,
-                        "qualificationLaunchToggle": false
+                        "qualificationLaunchToggle": false,
+                        "rocketData": {
+                            "parachuteSize": 24,
+                            "payloadMass": 2.1,
+                            "totalMass": 1850,
+                            "ballastMass": 150,
+                            "altimeter": "PerfectFlite StratoLoggerCF"
+                        },
+                        "weatherAtLaunch": {
+                            "timeOfLaunch": "14:32",
+                            "temperature": 72,
+                            "humidity": 45,
+                            "windDirection": "NW",
+                            "windSpeed": 8,
+                            "airPressure": 30.15,
+                            "launchNumber": 1
+                        },
+                        "predictedAltitude": 2750,
+                        "predictedTime": 45,
+                        "launch": {
+                            "successfulLiftoff": true,
+                            "hungOnRod": false,
+                            "tipOff": false,
+                            "motorFail": false
+                        },
+                        "trajectory": {
+                            "straight": true,
+                            "spin": false,
+                            "corkscrewBarrelRoll": false,
+                            "unstable": false,
+                            "weathercocked": false
+                        },
+                        "recovery": {
+                            "ejectionTime": 42,
+                            "delay": 6,
+                            "landing": "Soft",
+                            "recovered": true,
+                            "crash": false,
+                            "ballistic": false
+                        },
+                        "parachuteRecovery": {
+                            "deploymentLevel": "Apogee",
+                            "parachuteDescent": "Stable",
+                            "tangled": false
+                        },
+                        "damage": {
+                            "scuffedPaint": false,
+                            "minorDamage": false,
+                            "rocketDestroyed": false,
+                            "rocketLoss": false,
+                            "finsDamaged": false,
+                            "zipperedTube": false
+                        },
+                        "privateNotes": "Perfect flight conditions, motor performed exactly as expected"
                     }
                 ]
             },
@@ -108,6 +388,7 @@ const launchData = {
                 "peakTime": "10:45",
                 "importantLaunchDay": false,
                 "qualificationLaunchDay": true,
+                "photo": "tarc-qualifier-2025.jpg",
                 "launches": [
                     {
                         "rocket": "TARC Champion",
@@ -121,6 +402,31 @@ const launchData = {
                         "publicNotes": "TARC National Qualifier - achieved 798 feet in 44.2 seconds with unbroken egg.",
                         "launchToggle": true,
                         "qualificationLaunchToggle": true
+                    }
+                ]
+            },
+            {
+                "date": "2025-02-08",
+                "location": "Wake County Launch Field",
+                "attendedMembers": 5,
+                "peakAltitude": 650,
+                "peakTime": "11:15",
+                "importantLaunchDay": false,
+                "qualificationLaunchDay": false,
+                "photo": null,
+                "launches": [
+                    {
+                        "rocket": "Youth Builder Special",
+                        "motor": "D12-5",
+                        "success": true,
+                        "altitude": 650,
+                        "eggStatus": "n/a",
+                        "time": "11:15",
+                        "tarcScore": null,
+                        "important": false,
+                        "publicNotes": "Perfect training flight! Five new 4-H members successfully built and launched their first rockets.",
+                        "launchToggle": true,
+                        "qualificationLaunchToggle": false
                     }
                 ]
             }
@@ -137,6 +443,7 @@ const launchData = {
                 "peakTime": "15:20",
                 "importantLaunchDay": true,
                 "qualificationLaunchDay": false,
+                "photo": "record-altitude-2026.jpg",
                 "launches": [
                     {
                         "rocket": "Thunder Strike II",
@@ -169,6 +476,20 @@ function formatDate(dateStr) {
 function renderLaunchDay(launchDay) {
     const importantIcon = launchDay.importantLaunchDay ? '🏆' : '🚀';
     const qualIcon = launchDay.qualificationLaunchDay ? ' (QUAL)' : '';
+    const photoHtml = launchDay.photo ? `<img src="launch day photos/${launchDay.photo}" alt="Launch day photo" class="launch-day-photo">` : '';
+    
+    const privateDataHtml = isPrivateMode && launchDay.weather ? `
+        <div class="private-section">
+            <h4>🔒 Private Launch Day Data</h4>
+            <div class="private-grid">
+                <div><strong>Weather:</strong> Cloudy: ${launchDay.weather.cloudy ? 'Yes' : 'No'}, Muddy: ${launchDay.weather.muddy ? 'Yes' : 'No'}, Rainy: ${launchDay.weather.rainy ? 'Yes' : 'No'}, Visibility: ${launchDay.weather.visibility}</div>
+                <div><strong>Time Period:</strong> ${launchDay.timePeriod}</div>
+                <div><strong>Roles:</strong> ${Object.entries(launchDay.roles || {}).map(([person, role]) => `${person}: ${role}`).join(', ')}</div>
+                <div><strong>Feedback:</strong> Recovery: ${launchDay.feedback?.recoveryFeedback}, Setup: ${launchDay.feedback?.rocketSetupFeedback}</div>
+                <div><strong>To Improve:</strong> ${launchDay.feedback?.whatToImprove}</div>
+            </div>
+        </div>
+    ` : '';
     
     return `
         <div class="launch-day-card" data-date="${launchDay.date}">
@@ -183,6 +504,8 @@ function renderLaunchDay(launchDay) {
                 <div class="expand-icon">▼</div>
             </div>
             <div class="launch-day-details" style="display: none;">
+                ${photoHtml}
+                ${privateDataHtml}
                 ${launchDay.launches.map(launch => renderLaunch(launch)).join('')}
             </div>
         </div>
@@ -195,10 +518,26 @@ function renderLaunch(launch) {
     const qualBadge = launch.qualificationLaunchToggle ? '<span class="qual-badge">🎯 Qualification</span>' : '';
     const tarcScore = launch.tarcScore ? `<strong>TARC Score:</strong> ${launch.tarcScore}<br>` : '';
     
+    const rocketInfo = getRocketInfo(launch.rocket);
+    const rocketLink = rocketInfo ? `<a href="rockets.html" class="rocket-link">${launch.rocket}</a>` : launch.rocket;
+    const rocketDetails = rocketInfo ? `<small>(${rocketInfo.diameter}" dia, ${rocketInfo.altitudeIntent}ft target)</small>` : '';
+    
+    const privateLaunchData = isPrivateMode && launch.rocketData ? `
+        <div class="private-launch-section">
+            <h5>🔒 Private Launch Data</h5>
+            <p><strong>Predicted:</strong> ${launch.predictedAltitude}ft in ${launch.predictedTime}s | <strong>Actual:</strong> ${launch.altitude}ft in ${launch.time}</p>
+            <p><strong>Weather:</strong> ${launch.weatherAtLaunch?.temperature}°F, ${launch.weatherAtLaunch?.windSpeed}mph ${launch.weatherAtLaunch?.windDirection}, ${launch.weatherAtLaunch?.humidity}% humidity</p>
+            <p><strong>Rocket:</strong> Total mass: ${launch.rocketData.totalMass}g, Payload: ${launch.rocketData.payloadMass}oz, Chute: ${launch.rocketData.parachuteSize}"</p>
+            <p><strong>Recovery:</strong> Ejection at ${launch.recovery?.ejectionTime}s, ${launch.recovery?.landing} landing, ${launch.recovery?.recovered ? 'Recovered' : 'Not recovered'}</p>
+            <p><strong>Damage:</strong> ${Object.entries(launch.damage || {}).filter(([k,v]) => v).map(([k]) => k).join(', ') || 'None'}</p>
+            <p><strong>Private Notes:</strong> ${launch.privateNotes || 'None'}</p>
+        </div>
+    ` : '';
+    
     return `
         <div class="launch-item">
             <div class="launch-header">
-                <h4>${statusIcon} ${launch.rocket}</h4>
+                <h4>${statusIcon} ${rocketLink} ${rocketDetails}</h4>
                 <div class="launch-badges">
                     ${importantBadge}
                     ${qualBadge}
@@ -209,6 +548,7 @@ function renderLaunch(launch) {
                 <p><strong>Egg Status:</strong> ${launch.eggStatus} | <strong>Time:</strong> ${launch.time}</p>
                 ${tarcScore ? `<p>${tarcScore}</p>` : ''}
                 <p class="launch-notes">${launch.publicNotes}</p>
+                ${privateLaunchData}
             </div>
         </div>
     `;
@@ -230,6 +570,60 @@ function toggleLaunchDay(date) {
     }
 }
 
+function calculateSeasonStats(data) {
+    let highestAltitude = 0;
+    let bestTarcScore = null;
+    let maxLaunchesInDay = 0;
+    let totalLaunches = 0;
+    
+    data.launchDays.forEach(day => {
+        const dayLaunches = day.launches.length;
+        totalLaunches += dayLaunches;
+        maxLaunchesInDay = Math.max(maxLaunchesInDay, dayLaunches);
+        
+        day.launches.forEach(launch => {
+            highestAltitude = Math.max(highestAltitude, launch.altitude);
+            if (launch.tarcScore && (bestTarcScore === null || launch.tarcScore > bestTarcScore)) {
+                bestTarcScore = launch.tarcScore;
+            }
+        });
+    });
+    
+    return {
+        highestAltitude,
+        bestTarcScore: bestTarcScore || 'N/A',
+        maxLaunchesInDay,
+        totalLaunches
+    };
+}
+
+function renderSeasonStats(year, stats) {
+    const seasonLabel = year === 2025 ? '2024-2025' : '2025-2026';
+    return `
+        <div class="season-stats-card">
+            <h3>📊 ${seasonLabel} Season Statistics</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Highest Altitude</span>
+                    <span class="stat-value">${stats.highestAltitude} ft</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Best TARC Score</span>
+                    <span class="stat-value">${stats.bestTarcScore}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Most Launches/Day</span>
+                    <span class="stat-value">${stats.maxLaunchesInDay}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Launches</span>
+                    <span class="stat-value">${stats.totalLaunches}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function renderLaunchDays(year) {
     const data = launchData[year];
     if (!data) return;
@@ -238,13 +632,38 @@ function renderLaunchDays(year) {
     if (!container) return;
     
     const sortedDays = data.launchDays.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const stats = calculateSeasonStats(data);
+    const seasonLabel = year === 2025 ? '2024-2025' : '2025-2026';
     
     container.innerHTML = `
-        <h2 style="text-align: center; margin-bottom: 2rem;">${year} Launch History 🚀</h2>
+        <h2 style="text-align: center; margin-bottom: 2rem;">${seasonLabel} Launch History 🚀</h2>
         <div class="launch-timeline">
             ${sortedDays.map(day => renderLaunchDay(day)).join('')}
+            ${renderSeasonStats(year, stats)}
         </div>
     `;
+}
+
+function renderRockets(year) {
+    const container = document.querySelector(`[data-season="${year}"] .rocket-grid`);
+    if (!container) return;
+    
+    const rockets = rocketData.rockets.filter(rocket => {
+        const rocketYear = new Date(rocket.creationDate).getFullYear();
+        return (year === 2025 && rocketYear <= 2025) || (year === 2026 && rocketYear <= 2026);
+    });
+    
+    container.innerHTML = rockets.map(rocket => `
+        <div class="rocket-card">
+            <img src="rocket images/${rocket.image}" alt="${rocket.name}" class="rocket-image">
+            <div class="rocket-info">
+                <h3>${rocket.name}</h3>
+                <p><strong>Created:</strong> ${formatDate(rocket.creationDate)}</p>
+                <p><strong>Target Altitude:</strong> ${rocket.altitudeIntent} ft</p>
+                <p><strong>Diameter:</strong> ${rocket.diameter}"</p>
+            </div>
+        </div>
+    `).join('');
 }
 
 // Initialize season toggles and load launch data after DOM ready
@@ -255,6 +674,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('launch-days-2025')) {
         renderLaunchDays(2025);
         renderLaunchDays(2026);
+        // Render planned launches for 2026 (will no-op if JSON missing)
+        renderPlannedLaunches(2026);
+    }
+    
+    // Load rocket data if on rockets page
+    if (document.querySelector('.rocket-grid')) {
+        renderRockets(2025);
+        renderRockets(2026);
     }
 });
 
