@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - 4-H Wake Rocketry</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="side-rockets left">
+        <img src="rocket photos/images.jpg" alt="Rocket" class="rocket-photo">
+        <img src="rocket photos/images (2).jpg" alt="Rocket" class="rocket-photo">
+        <img src="rocket photos/images (5).jpg" alt="Rocket" class="rocket-photo">
+    </div>
+    <div class="side-rockets right">
+        <img src="rocket photos/images (1).jpg" alt="Rocket" class="rocket-photo">
+        <img src="rocket photos/images (3).jpg" alt="Rocket" class="rocket-photo">
+        <img src="rocket photos/images (6).jpg" alt="Rocket" class="rocket-photo">
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <img src="4h logo.png" alt="4-H Logo">
+                4-H Wake Rocketry
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="team.html" class="nav-link">Team</a></li>
+                <li><a href="rockets.html" class="nav-link">Rockets</a></li>
+                <li><a href="launches.html" class="nav-link">Launches</a></li>
+                <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                <li><a href="contact.html" class="nav-link active">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main style="margin-top: 70px;">
+        <section class="hero" style="padding: 80px 20px 60px;">
+            <div class="hero-content">
+                <h1>Get In Touch</h1>
+                <p>Interested in joining our team, collaborating on projects, or learning more about model rocketry?</p>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h2>Contact Information</h2>
+                        <div class="contact-item">
+                            <h4>📧 Email</h4>
+                            <p>4hwakerocketry@gmail.com<br>
+                            naveen.domadia@gmail.com</p>
+                        </div>
+                        <div class="contact-item">
+                            <h4>📱 Phone</h4>
+                            <p>(201) 913 2922<br>
+                            (919) 447-6253</p>
+                        </div>
+                        <div class="contact-item">
+                            <h4>🌐 Social Media</h4>
+                            <p>Follow us for launch updates and behind-the-scenes content:<br>
+                            @4HWakeRocketry on all platforms</p>
+                        </div>
+                    </div>
+
+                    <div class="form-container">
+                        <h2>Send Us a Message</h2>
+                        <form class="contact-form" onsubmit="handleSubmit(event)">
+                            <div class="form-group">
+                                <label for="name">Full Name *</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <select id="subject" name="subject">
+                                    <option value="general">General Inquiry</option>
+                                    <option value="join">Join the Team</option>
+                                    <option value="collaboration">Collaboration</option>
+                                    <option value="outreach">Outreach Event</option>
+                                    <option value="technical">Technical Question</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message *</label>
+                                <textarea id="message" name="message" rows="5" required placeholder="Tell us about your interest in model rocketry, experience level, or any questions you have..."></textarea>
+                            </div>
+                            <button type="submit" class="submit-btn">Send Message 🚀</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mission" style="padding: 40px 0;">
+            <div class="container">
+                <h2>Join Our Team</h2>
+                <div class="highlight-grid">
+                    <div class="highlight-card">
+                        <h3>🎓 Students Welcome</h3>
+                        <p>All skill levels and majors welcome! We provide training and mentorship for beginners interested in aerospace engineering.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3>🔧 Skills Needed</h3>
+                        <p>Engineering, design, electronics, programming, project management, safety coordination, and outreach coordination.</p>
+                    </div>
+                    <div class="highlight-card">
+                        <h3>⏰ Time Commitment</h3>
+                        <p>Regular meetings twice weekly, plus launch events and competitions. Flexible schedule for busy students.</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <h3>Ready to Reach New Heights?</h3>
+                    <p>Join us for our next meeting or launch event. No experience necessary - just bring your curiosity and enthusiasm!</p>
+                    <a href="mailto:info@4hwake.rocketry.org?subject=Join%20the%20Team" class="cta-button" style="margin-top: 1rem;">🚀 Blast Off With Us!</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 4-H Wake Rocketry. All rights reserved.</p>
+            <p>Follow NAR Safety Code</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
