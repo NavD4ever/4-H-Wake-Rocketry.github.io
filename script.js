@@ -160,19 +160,8 @@ const fallbackData = {
     }
 };
 
-async function loadLaunchData(year) {
-    if (launchData[year]) return launchData[year];
-    
-    try {
-        const response = await fetch(`./data/launches-${year}.json`);
-        const data = await response.json();
-        launchData[year] = data;
-        return data;
-    } catch (error) {
-        console.warn(`Using fallback data for ${year}:`, error.message);
-        launchData[year] = fallbackData[year];
-        return fallbackData[year];
-    }
+function loadLaunchData(year) {
+    return fallbackData[year] || null;
 }
 
 function formatDate(dateStr) {
@@ -248,8 +237,8 @@ function toggleLaunchDay(date) {
     }
 }
 
-async function renderLaunchDays(year) {
-    const data = await loadLaunchData(year);
+function renderLaunchDays(year) {
+    const data = loadLaunchData(year);
     if (!data) return;
     
     const container = document.getElementById(`launch-days-${year}`);
@@ -266,13 +255,13 @@ async function renderLaunchDays(year) {
 }
 
 // Initialize season toggles and load launch data after DOM ready
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     initSeasonToggles();
     
     // Load launch data for both years if on launches page
     if (document.getElementById('launch-days-2025')) {
-        await renderLaunchDays(2025);
-        await renderLaunchDays(2026);
+        renderLaunchDays(2025);
+        renderLaunchDays(2026);
     }
 });
 
